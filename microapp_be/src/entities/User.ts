@@ -10,7 +10,10 @@ export class User {
     fullname: string
 
     @Column()
-    alamat: string
+    address: string
+
+    @Column()
+    gender: string
 
     @Column()
     username: string

@@ -1,30 +1,38 @@
 import * as express from "express"
-import ArticlesController from "../controllers/ArticlesController"
+import ArticlesController from "../controllers/ArticlesControllers"
 import UploadFile from "../middlewares/UploadFile"
 import PaslonsControllers from "../controllers/PaslonsControllers"
-import PartaiController from "../controllers/PartaiController"
+import PartaiController from "../controllers/PartaiControllers"
 import VotersControllers from "../controllers/VotersControllers"
+import AuthControllers from "../controllers/AuthControllers"
+import AuthMiddleware from "../middlewares/Auth"
 
 const routes = express.Router()
 
 //articles
-routes.get("/articles", ArticlesController.getAll)
-routes.get("/article/:id", ArticlesController.getOneById)
-routes.post("/article",UploadFile.upload("image"), ArticlesController.createArticle)
+routes.get("/articles", AuthMiddleware.Auth, ArticlesController.getAll)
+routes.get("/article/:id", AuthMiddleware.Auth, ArticlesController.getOneById)
+routes.post("/article", AuthMiddleware.Auth, UploadFile.upload("image"), ArticlesController.createArticle)
 
 //paslons
-routes.get("/paslons", PaslonsControllers.getAll)
-routes.get("/paslon/:id", PaslonsControllers.getOneById)
-routes.post("/paslon",UploadFile.upload("image"), PaslonsControllers.createPaslon)
+routes.get("/paslons", AuthMiddleware.Auth, PaslonsControllers.getAll)
+routes.get("/paslon/:id", AuthMiddleware.Auth, PaslonsControllers.getOneById)
+routes.post("/paslon", AuthMiddleware.Auth, UploadFile.upload("image"), PaslonsControllers.createPaslon)
 
 //partai
-routes.get("/partai", PartaiController.getAll)
-routes.get("/partai/:id", PartaiController.getOneById)
-routes.post("/partai",UploadFile.upload("image"), PartaiController.createPartai)
+routes.get("/partai", AuthMiddleware.Auth, PartaiController.getAll)
+routes.get("/partai/:id", AuthMiddleware.Auth, PartaiController.getOneById)
+routes.post("/partai", AuthMiddleware.Auth, UploadFile.upload("image"), PartaiController.createPartai)
 
 //voters
-routes.get("/voters", VotersControllers.getAll)
-routes.get("/voter/:id", VotersControllers.getOneById)
-routes.post("/voter", VotersControllers.createVoters)
+routes.get("/voters", AuthMiddleware.Auth, VotersControllers.getAll)
+routes.get("/voter/:id", AuthMiddleware.Auth, VotersControllers.getOneById)
+routes.post("/voter", AuthMiddleware.Auth, VotersControllers.createVoters)
+
+//auth
+routes.post("/auth/register", AuthControllers.register)
+routes.post("/auth/login", AuthControllers.login)
+routes.get("/auth", AuthControllers.getAll)
+routes.get("/auth/:id", AuthControllers.getOne)
 
 export default routes
