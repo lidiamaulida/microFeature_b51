@@ -27,5 +27,43 @@ export default new class ArticlesService {
         throw error
     }
   }
+
+  async getOneById(articleId: number): Promise<object | undefined> {
+    try {
+      const article = await this.ArticlesRepository
+        .createQueryBuilder('articles')
+        .select()
+        .where('articles.id = :id', { id: articleId })
+        .getOne();
+
+      if (!article) {
+        return {
+          message: 'Data not found',
+        };
+      }
+
+      return {
+        message: 'success get article',
+        data: article
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async createArticle(data: any): Promise<object | string > {
+    try {
+      const newArticle = this.ArticlesRepository.create(data);
+      const savedArticle = await this.ArticlesRepository.save(newArticle)
+      
+
+      return {
+        message: 'success create article',
+        data: savedArticle,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
     
 }

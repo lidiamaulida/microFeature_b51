@@ -1,7 +1,7 @@
 import { AppDataSource } from "./data-source"
 import * as express from "express"
 import 'dotenv/config'
-import routes from "./route"
+import routes from "./route/indexRout"
 
 AppDataSource.initialize()
     .then(async () => {
