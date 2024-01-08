@@ -8,35 +8,37 @@ export default new class ArticlesService {
 
     async gettAllARticle() : Promise<object | string> {
      try {
-       const articles = await this.ArticlesRepository
-        .createQueryBuilder('articles')
-        .select([
-          'articles.id',
-          'articles.title',
-          'articles.date',
-          'articles.author',
-          'articles.image',
-        ])
-        .getMany();
+      const response = await this.ArticlesRepository.find({
+        relations: ["user"],
+        select: {
+            user: {
+                fullname: true
+            }
+        }
+    })
 
       return {
         message: 'success get all articles',
-        data: articles,
+        data: response,
       };
     } catch (error) {
         throw error
     }
   }
 
-  async getOneById(articleId: number): Promise<object | undefined> {
+  async getOneById(id: number): Promise<object | undefined> {
     try {
-      const article = await this.ArticlesRepository
-        .createQueryBuilder('articles')
-        .select()
-        .where('articles.id = :id', { id: articleId })
-        .getOne();
+      const response = await this.ArticlesRepository.findOne({
+        where: { id },
+        relations: ["user"],
+        select: {
+            user: {
+                fullname: true
+            }
+        }
+    })
 
-      if (!article) {
+      if (!response) {
         return {
           message: 'Data not found',
         };
@@ -44,7 +46,7 @@ export default new class ArticlesService {
 
       return {
         message: 'success get article',
-        data: article
+        data: response
       };
     } catch (error) {
       throw error;
@@ -65,5 +67,48 @@ export default new class ArticlesService {
       throw error;
     }
   }
+
+  async update(id: string, data: any): Promise<object | string> {
+    try {
+    const numericId = parseInt(id, 10);
+    if (isNaN(numericId)) {
+        return {
+        message: "Invalid ID provided",
+        error: "Invalid input for type integer"
+        };
+    }
+    const response = await this.ArticlesRepository.update(numericId, data);
+
+    return {
+        message: "success updating article",
+        data: response
+    };
+    } catch (error) {
+    console.error('Error updating article:', error);
+    return {
+        message: "something error while updating article",
+        error: error.message
+    };
+    }
+  }
+
+  async delete(id: string): Promise<object | string> {
+    try {
+        const numericId = parseInt(id, 10);
+        if (isNaN(numericId)) {
+            return {
+                message: "Invalid ID provided",
+                error: "Invalid input for type integer"
+            };
+        }
+        const response = await this.ArticlesRepository.delete(numericId);
+        return {
+            message: "success deleting a article",
+            data: response
+        }
+    } catch (error) {
+        return "message: something error while deleting article"
+    }
+}
     
 }

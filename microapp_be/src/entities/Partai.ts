@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm"
+import { paslons } from "./Paslon"
 
 @Entity()
 export class partai {
@@ -21,4 +22,6 @@ export class partai {
     @Column()
     image: string
 
+    @ManyToOne(() => paslons, (paslon) => paslon.partai)
+    paslonId : paslons
 }

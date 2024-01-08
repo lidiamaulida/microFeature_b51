@@ -35,6 +35,7 @@ export default new class PartaiController {
             ketuaUmum: req.body.ketuaUmum,
             visiMisi: req.body.visiMisi,
             alamat: req.body.alamat,
+            paslonId: req.body.paslonId,
             image: res.locals.filename
           }
           
@@ -45,12 +46,11 @@ export default new class PartaiController {
           const clouninaryRes = await cloudinary.destination(value.image)
 
           const obj = {
-            name: value.name,
-            ketuaUmum: value.ketuaUmum,
-            visiMisi: value.visiMisi,
-            alamat: value.alamat,
+            ...value,
             image: clouninaryRes.secure_url
-          }
+        }
+        console.log(obj);
+        
           
           const response = await PartaiService.createPartai(obj);
 
@@ -59,4 +59,49 @@ export default new class PartaiController {
           return res.status(500).json({ message: 'Internal Server Error', error: error.message });
         }
     }
+
+    async update(req: Request, res: Response) {
+        try {
+            const id = req.params.id;
+            const data = {
+                name: req.body.name,
+                ketuaUmum: req.body.ketuaUmum,
+                visiMisi: req.body.visiMisi,
+                alamat: req.body.alamat,
+                paslonId: req.body.paslonId,
+                image: res.locals.filename
+              }
+
+              const { error, value } = createPartaiSchema.validate(data)
+              if (error) return res.status(400).json(error.details[0].message)
+
+              const clouninaryRes = await cloudinary.destination(value.image)
+          
+              cloudinary.upload()
+
+              const obj = {
+                ...value,
+                image: clouninaryRes.secure_url
+            }
+            console.log(obj);
+
+            const response = await PartaiService.update(id, obj);
+            return res.status(200).json(response);
+        } catch (error) {
+            console.error('Error updating partai:', error);
+            return res.status(500).json({ message: "Internal server error", error: error.message });
+        }
+    }
+
+    async delete(req: Request, res: Response) {
+        try {
+            const id = req.params.id;
+            const response = await PartaiService.delete(id);
+            return res.status(200).json(response);
+        } catch (error) {
+            console.error('Error deleting partai:', error);
+            return res.status(500).json({ message: "Internal server error", error: error.message });
+        }
+    }
+
 }

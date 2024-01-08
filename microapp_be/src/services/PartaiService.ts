@@ -46,8 +46,7 @@ export default new class PartaiService {
 
   async createPartai(data: any): Promise<object | string > {
     try {
-      const newPartai = this.PartaiRepository.create(data);
-      const savedPartai = await this.PartaiRepository.save(newPartai)
+      const savedPartai = await this.PartaiRepository.save(data)
       
 
       return {
@@ -58,4 +57,48 @@ export default new class PartaiService {
       throw error;
     }
   }
+
+  async update(id: string, data: any): Promise<object | string> {
+    try {
+    const numericId = parseInt(id, 10);
+    if (isNaN(numericId)) {
+        return {
+        message: "Invalid ID provided",
+        error: "Invalid input for type integer"
+        };
+    }
+    const response = await this.PartaiRepository.update(numericId, data);
+
+    return {
+        message: "success updating a partai",
+        data: response
+    };
+    } catch (error) {
+    console.error('Error updating partai:', error);
+    return {
+        message: "something error while updating partai",
+        error: error.message
+    };
+    }
+  }
+
+  async delete(id: string): Promise<object | string> {
+    try {
+        const numericId = parseInt(id, 10);
+        if (isNaN(numericId)) {
+            return {
+                message: "Invalid ID provided",
+                error: "Invalid input for type integer"
+            };
+        }
+        const response = await this.PartaiRepository.delete(numericId);
+        return {
+            message: "success deleting a partai",
+            data: response
+        }
+    } catch (error) {
+        return "message: something error while deleting partai"
+    }
+  }
+
 }

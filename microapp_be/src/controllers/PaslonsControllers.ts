@@ -60,4 +60,34 @@ export default new class PaslonsControllers {
           return res.status(500).json({ message: 'Internal Server Error', error: error.message });
         }
     }
+
+    async update(req: Request, res: Response) {
+      try {
+          const id = req.params.id;
+          const data = {
+            name: req.body.name,
+            nomorUrut: req.body.nomorUrut,
+            visiMisi: req.body.visiMisi,
+            koalisi: req.body.koalisi,
+            image: res.locals.filename
+          }
+          
+          const response = await PaslonsService.update(id, data);
+          return res.status(200).json(response);
+      } catch (error) {
+          console.error('Error updating province:', error);
+          return res.status(500).json({ message: "Internal server error", error: error.message });
+      }
+    }
+
+    async delete(req: Request, res: Response) {
+      try {
+          const id = req.params.id;
+          const response = await PaslonsService.delete(id);
+          return res.status(200).json(response);
+      } catch (error) {
+          console.error('Error deleting paslon:', error);
+          return res.status(500).json({ message: "Internal server error", error: error.message });
+      }
+  }
 }

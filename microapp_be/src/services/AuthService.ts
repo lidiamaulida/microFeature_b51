@@ -9,16 +9,15 @@ export default new class AuthServices {
 
     async register(reqBody: any): Promise<object | string > {
         try {
+          const { role, ...userData } = reqBody;
           const checkUsername = await this.AuthRepository.count({ where: { username: reqBody.username}})
           if(checkUsername > 0) return `Username : ${reqBody.username} is already registered`
 
           const hashPassword = await bcrypt.hash(reqBody.password, 10)
 
           const obj = this.AuthRepository.create({
-            fullname: reqBody.fullname,
-            address: reqBody.address,
-            gender: reqBody.gender,
-            username: reqBody.username,
+            ...userData,
+            role: role || "user",
             password : hashPassword
           })
 
@@ -80,6 +79,50 @@ export default new class AuthServices {
       } catch (error) {
           return "message: something error while get one user"
       }
-  } 
+  }
+
+  async update(id: string, data: any): Promise<object | string> {
+    try {
+    const numericId = parseInt(id, 10);
+    if (isNaN(numericId)) {
+        return {
+        message: "Invalid ID provided",
+        error: "Invalid input for type integer"
+        };
+    }
+    const response = await this.AuthRepository.update(numericId, data);
+
+    return {
+        message: "success updating a user",
+        data: response
+    };
+    } catch (error) {
+    console.error('Error updating user:', error);
+    return {
+        message: "something error while updating user",
+        error: error.message
+    };
+    }
+  }
+
+  async delete(id: string): Promise<object | string> {
+    try {
+        const numericId = parseInt(id, 10);
+        if (isNaN(numericId)) {
+            return {
+                message: "Invalid ID provided",
+                error: "Invalid input for type integer"
+            };
+        }
+        const response = await this.AuthRepository.delete(numericId);
+        return {
+            message: "success deleting a user",
+            data: response
+        }
+    } catch (error) {
+      console.error('Error deleting user:', error);
+        return "message: something error while deleting user"
+    }
+}
 
 }

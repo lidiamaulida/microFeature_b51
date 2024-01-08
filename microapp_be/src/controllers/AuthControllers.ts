@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
 import { getOneUserValidation, loginSchema, registerSchema } from "../utils/validator/AuthValidator"
 import AuthService from "../services/AuthService"
+import Auth from "../middlewares/Auth"
 
 export default new class AuthControllers {
     async register(req: Request, res: Response) {
@@ -61,5 +62,29 @@ export default new class AuthControllers {
           return res.status(500).json(error);
       }
   }
+
+  async update(req: Request, res: Response) {
+    try {
+        const id = req.params.id;
+        const data = req.body;
+        const response = await AuthService.update(id, data);
+        return res.status(200).json(response);
+    } catch (error) {
+        console.error('Error updating user:', error);
+        return res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+  }
+
+  async delete(req: Request, res: Response) {
+    try {
+        const id = req.params.id;
+        const response = await AuthService.delete(id);
+        return res.status(200).json(response);
+    } catch (error) {
+        console.error('Error deleting province:', error);
+        return res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+  }
+
 
 }

@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm"
+import { User } from "./User"
 
 @Entity({ name: "articles" })
 export class articles {
@@ -15,10 +16,12 @@ export class articles {
     @Column("date", { nullable: true })
     date: string
 
-    @Column()
+    @Column({ nullable: true })
     author: string
 
     @Column()
     image: string
 
+    @ManyToOne(() => User, (user) => user.article)
+    user: User
 }

@@ -3,59 +3,74 @@ import { voters } from "../entities/Voters";
 import { AppDataSource } from "../data-source";
 
 export default new class VotersService {
-    private readonly VotersRepository: Repository<voters> = AppDataSource.getRepository(voters)
+  private readonly VoteRepository: Repository<voters> = AppDataSource.getRepository(voters)
 
-    async getAllVoters() : Promise<object | string> {
-     try {
-       const voters = await this.VotersRepository
-        .createQueryBuilder('voters')
-        .select()
-        .getMany();
-
-      return {
-        message: 'success get all voters',
-        data: voters,
-      };
-    } catch (error) {
-        throw error
-    }
-  }
-
-  async getOneById(votersId: number): Promise<object | undefined> {
-    try {
-      const voters = await this.VotersRepository
-        .createQueryBuilder('voters')
-        .select()
-        .where('voters.id = :id', { id: votersId })
-        .getOne();
-
-      if (!voters) {
-        return {
-          message: 'Data not found',
-        };
+  async create(data: any): Promise<object | string> {
+      try {
+          const response = await this.VoteRepository.save(data)
+          return {
+              message: "success create vote",
+              data: response
+          }
+      } catch (error) {
+          return "message: something error while create vote"
       }
-
-      return {
-        message: 'success get voters',
-        data: voters
-      };
-    } catch (error) {
-      throw error;
-    }
   }
 
-  async createVoter(data: any): Promise<object | string > {
-    try {
-      const newVoter = this.VotersRepository.create(data);
-      const savedVoter = await this.VotersRepository.save(newVoter)
-      
-
-      return {
-        message: 'success create Voter',
-        data: savedVoter,
-      };
-    } catch (error) {
-      throw error;
-    }
+  async getAllVote(): Promise<object | string> {
+      try {
+          const response = await this.VoteRepository.find({
+              relations: ["user", "paslonId"],
+              select: {
+                  user: {
+                      fullname: true,
+                      address: true,
+                      gender: true
+                  },
+                  paslonId: {
+                      name: true
+                  }
+              }
+          });
+          
+          const countVoters = await this.VoteRepository.count()
+          return {
+              message: "success get all vote",
+              countVoters: countVoters,
+              data: response
+          };
+      } catch (error) {
+          console.error('Error while getting all votes:', error);
+          return "message: something error while get all vote";
+      }
   }
-}  
+
+  async getOne(id: number): Promise<object | string> {
+      try {
+      const response = await this.VoteRepository.findOne({
+          where: { id },
+          relations: ["user", "paslonId"],
+          select: {
+              user: {
+                  fullname: true,
+                  address: true,
+                  gender: true,
+              },
+              paslonId: {
+                  name: true,
+              },
+          },
+      });
+
+      const countVoters = await this.VoteRepository.count()
+          return {
+              message: "success get a vote",
+              countVoters: countVoters,
+              data: response
+          };
+  
+      } catch (error) {
+        return "message: something error while getting a Vote";
+      }
+  }
+}

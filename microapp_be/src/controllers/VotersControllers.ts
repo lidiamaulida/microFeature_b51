@@ -1,50 +1,52 @@
-import { Request, Response } from "express"
-import VotersService from "../services/VotersService"
-import { createVotersSchema } from "../utils/validator/VotersValidator"
+import { Request, Response } from "express";
+import { createVotersSchema } from "../utils/validator/VotersValidator";
+import VotersService from "../services/VotersService";
 
-export default new class VotersControllers {
-    async getAll(req: Request, res: Response){
+
+export default new class voteController {
+    async create(req: Request, res: Response) {
         try {
-            const response = await VotersService.getAllVoters()
-
-            return res.status(200).json(response)
-        } catch (error) {
-            return res.status(500).json(error)
-        }
-    }
-
-    async getOneById(req: Request, res: Response){
-        try {
-            const id = parseInt(req.params.id, 10);
-            if (isNaN(id)) {
-            return res.status(400).json({ message: "Invalid ID provided", error: "Invalid input for type number" });
-            }
-
-            const response = await VotersService.getOneById(id)
-            return res.status(200).json(response)
-        } catch (error) {
-            return res.status(500).json(error)
-        }
-    }
-
-    async createVoters(req: Request, res: Response) {
-        try {
+          const loginSessions = res.locals.loginSession
           const data = {
-            name: req.body.name,
-            alamat: req.body.alamat,
-            jenisKelamin: req.body.jenisKelamin,
-            paslon: req.body.paslon,
+            paslonId: req.body.paslonId,
           }
           
           const { error, value } = createVotersSchema.validate(data)
-          if (error) return res.status(400).json(error.details[0].message)
-          
-          
-          const response = await VotersService.createVoter(value);
 
+          const obj = {
+            ...value,
+            user: {
+              id: loginSessions.obj.id
+            }
+          }
+    
+          if(error) return res.status(400).json(error)
+    
+          const response = await VotersService.create(obj)
           return res.status(201).json(response);
         } catch (error) {
-          return res.status(500).json({ message: 'Internal Server Error', error: error.message });
+          return res.status(500).json({ message: "Internal server error", error: error.message });
+        }
+    }
+
+    async getAll(req: Request, res: Response) {
+      try {
+        const response = await VotersService.getAllVote();
+        return res.status(200).json(response);
+      } catch (error) {
+        console.error('Error while getting all votes:', error);
+          return res.status(500).json({ message: "Internal server error", error: error.message });
+        }
+      }
+
+    async getOne(req: Request, res: Response) {
+      try {
+        const id = parseInt(req.params.id, 10);
+        const response = await VotersService.getOne(id);
+        return res.status(200).json(response);
+      } catch (error) {
+        console.error("Error getting a Vote:", error);
+        return res.status(500).json({ message: "Internal server error", error: error.message });
         }
     }
 }

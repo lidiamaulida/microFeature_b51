@@ -7,29 +7,37 @@ export default new class PaslonsService {
 
     async getAllPaslons() : Promise<object | string> {
      try {
-       const paslons = await this.PaslonsRepository
-        .createQueryBuilder('paslons')
-        .select()
-        .getMany();
+        const response = await this.PaslonsRepository.find({
+          relations: ["partai"],
+          select: {
+              partai: {
+                  name: true
+              }
+          }
+      });
 
       return {
         message: 'success get all paslons',
-        data: paslons,
+        data: response,
       };
     } catch (error) {
         throw error
     }
   }
 
-  async getOneById(paslonsId : number): Promise<object | undefined> {
+  async getOneById(id : number): Promise<object | undefined> {
     try {
-      const paslons = await this.PaslonsRepository
-        .createQueryBuilder('paslons')
-        .select()
-        .where('paslons.id = :id', { id: paslonsId })
-        .getOne();
+      const response = await this.PaslonsRepository.findOne({
+        where: { id },
+        relations: ["partai"],
+        select: {
+            partai: {
+                name: true
+            }
+        }
+      });
 
-      if (!paslons) {
+      if (!response) {
         return {
           message: 'Data not found',
         };
@@ -37,7 +45,7 @@ export default new class PaslonsService {
 
       return {
         message: 'success get paslon',
-        data: paslons
+        data: response
       };
     } catch (error) {
       throw error;
@@ -56,6 +64,50 @@ export default new class PaslonsService {
       };
     } catch (error) {
       throw error;
+    }
+  }
+
+  async update(id: string, data: any): Promise<object | string> {
+    try {
+    const numericId = parseInt(id, 10);
+    if (isNaN(numericId)) {
+        return {
+        message: "Invalid ID provided",
+        error: "Invalid input for type integer"
+        };
+    }
+    const response = await this.PaslonsRepository.update(numericId, data);
+
+    return {
+        message: "success updating a paslon",
+        data: response
+    };
+    } catch (error) {
+    console.error('Error updating paslon:', error);
+    return {
+        message: "something error while updating paslon",
+        error: error.message
+    };
+    }
+  }
+
+  async delete(id: string): Promise<object | string> {
+    try {
+        const numericId = parseInt(id, 10);
+        if (isNaN(numericId)) {
+            return {
+                message: "Invalid ID provided",
+                error: "Invalid input for type integer"
+            };
+        }
+        const response = await this.PaslonsRepository.delete(numericId);
+        return {
+            message: "success deleting a paslon",
+            data: response
+        }
+    } catch (error) {
+        console.error('Error deleting paslon:', error);
+        return "message: something error while deleting paslon"
     }
   }
 

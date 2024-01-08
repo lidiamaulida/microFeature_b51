@@ -4,6 +4,6 @@ export const createArticleSchema = joi.object({
     title: joi.string().required(),
     description: joi.string().required(),
     date: joi.string(),
-    author: joi.string().required(),
+    author: joi.number().allow(null),
     image: joi.string(),
 });

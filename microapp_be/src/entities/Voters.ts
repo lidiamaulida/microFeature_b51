@@ -1,4 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne } from "typeorm"
+import { User } from "./User"
+import { paslons } from "./Paslon"
 
 @Entity()
 export class voters {
@@ -6,16 +8,17 @@ export class voters {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
-    name: string
+    @OneToOne(() => User, (user) => user.vote, {
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+    })
+    @JoinColumn()
+    user : User
 
-    @Column()
-    alamat: string
-
-    @Column()
-    jenisKelamin: string
-
-    @Column()
-    paslon: string
+    @ManyToOne(() => paslons , (paslonId) => paslonId.vote, {
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+    })
+    paslonId : paslons
 
 }

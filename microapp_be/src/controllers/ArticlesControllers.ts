@@ -30,11 +30,11 @@ export default new class ArticleControllers {
 
     async createArticle(req: Request, res: Response) {
         try {
+          const loginSessions = res.locals.loginSession
           const data = {
             title: req.body.title,
             description: req.body.description,
             date: req.body.date,
-            author: req.body.author,
             image: res.locals.filename
           }
           
@@ -49,7 +49,10 @@ export default new class ArticleControllers {
             description: value.description,
             date: value.date,
             author: value.author,
-            image: clouninaryRes.secure_url
+            image: clouninaryRes.secure_url,
+            user: {
+              id: loginSessions.obj.id
+            }
           }
           
           const response = await ArticlesService.createArticle(obj);
@@ -59,5 +62,44 @@ export default new class ArticleControllers {
           return res.status(500).json({ message: 'Internal Server Error', error: error.message });
         }
     }
+
+    async update(req: Request, res: Response) {
+      try {
+          const loginSessions = res.locals.loginSession
+          const id = req.params.id;
+          const data = {
+            title: req.body.title,
+            description: req.body.description,
+            date: req.body.date,
+            image: res.locals.filename
+          }
+
+          const { error, value } = createArticleSchema.validate(data)
+          if (error) return res.status(400).json(error.details[0].message)
+
+          const obj = {
+            ...value,
+            user: {
+              id: loginSessions.obj.id
+            }
+          }
+          const response = await ArticlesService.update(id, obj);
+          return res.status(200).json(response);
+      } catch (error) {
+          console.error('Error updating article:', error);
+          return res.status(500).json({ message: "Internal server error", error: error.message });
+      }
+   }
+
+   async delete(req: Request, res: Response) {
+    try {
+        const id = req.params.id;
+        const response = await ArticlesService.delete(id);
+        return res.status(200).json(response);
+    } catch (error) {
+        console.error('Error deleting province:', error);
+        return res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+  }
 
 } 
