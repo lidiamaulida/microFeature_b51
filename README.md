@@ -1,6 +1,6 @@
 # How to Use Pemilu Backend with Postman
 
-## How to Use Authorization
+## How To Use Authorization
 
 1. Open Postman.
 2. Click on the 'Authorization' tab.
