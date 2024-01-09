@@ -11,13 +11,13 @@ export class partai {
     name: string
 
     @Column()
-    ketuaUmum: string
+    chairman: string
 
     @Column()
-    visiMisi: string
+    visionAndMission: string
 
     @Column()
-    alamat: string
+    address: string
 
     @Column()
     image: string

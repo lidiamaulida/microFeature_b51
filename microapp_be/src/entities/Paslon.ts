@@ -15,7 +15,7 @@ export class paslons {
     nomorUrut: number
 
     @Column()
-    visiMisi: string
+    visionAndMission: string
 
     @Column()
     koalisi: string

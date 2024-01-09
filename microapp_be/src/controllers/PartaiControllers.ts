@@ -32,9 +32,9 @@ export default new class PartaiController {
         try {
           const data = {
             name: req.body.name,
-            ketuaUmum: req.body.ketuaUmum,
-            visiMisi: req.body.visiMisi,
-            alamat: req.body.alamat,
+            chairman: req.body.ketuaUmum,
+            visionAndMission: req.body.visionAndMission,
+            address: req.body.address,
             paslonId: req.body.paslonId,
             image: res.locals.filename
           }
@@ -65,9 +65,9 @@ export default new class PartaiController {
             const id = req.params.id;
             const data = {
                 name: req.body.name,
-                ketuaUmum: req.body.ketuaUmum,
-                visiMisi: req.body.visiMisi,
-                alamat: req.body.alamat,
+                chairman: req.body.ketuaUmum,
+                visionAndMission: req.body.visionAndMission,
+                address: req.body.address,
                 paslonId: req.body.paslonId,
                 image: res.locals.filename
               }

@@ -33,7 +33,7 @@ export default new class PaslonsControllers {
           const data = {
             name: req.body.name,
             nomorUrut: req.body.nomorUrut,
-            visiMisi: req.body.visiMisi,
+            visionAndMission: req.body.visionAndMission,
             koalisi: req.body.koalisi,
             image: res.locals.filename
           }
@@ -48,7 +48,7 @@ export default new class PaslonsControllers {
           const obj = {
             name: value.name,
             nomorUrut: value.nomorUrut,
-            visiMisi: value.visiMisi,
+            visionAndMission: value.visionAndMission,
             koalisi: value.koalisi,
             image: clouninaryRes.secure_url
           }
@@ -67,7 +67,7 @@ export default new class PaslonsControllers {
           const data = {
             name: req.body.name,
             nomorUrut: req.body.nomorUrut,
-            visiMisi: req.body.visiMisi,
+            visionAndMission: req.body.visionAndMission,
             koalisi: req.body.koalisi,
             image: res.locals.filename
           }

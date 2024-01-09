@@ -10,22 +10,23 @@ import AuthMiddleware from "../middlewares/Auth"
 const routes = express.Router()
 
 //articles
+routes.get("/articles", ArticlesController.getAll)
 routes.get("/articles", AuthMiddleware.Auth, ArticlesController.getAll)
-routes.get("/article/:id", AuthMiddleware.Auth, ArticlesController.getOneById)
-routes.post("/article", AuthMiddleware.Auth, UploadFile.upload("image"), ArticlesController.createArticle)
+routes.get("/article/:id", ArticlesController.getOneById)
+routes.post("/article/add", AuthMiddleware.Auth, UploadFile.upload("image"), ArticlesController.createArticle)
 routes.patch("/article/:id", AuthMiddleware.Auth, UploadFile.upload("image"), ArticlesController.update)
 routes.delete("/article/:id", AuthMiddleware.Auth, ArticlesController.delete)
 
 //paslons
-routes.get("/paslons", AuthMiddleware.Auth, PaslonsControllers.getAll)
-routes.get("/paslon/:id", AuthMiddleware.Auth, PaslonsControllers.getOneById)
+routes.get("/paslons", PaslonsControllers.getAll)
+routes.get("/paslon/:id", PaslonsControllers.getOneById)
 routes.post("/paslon", AuthMiddleware.Auth, UploadFile.upload("image"), PaslonsControllers.createPaslon)
 routes.patch("/paslon/:id", AuthMiddleware.Auth, UploadFile.upload("image"), PaslonsControllers.update)
 routes.delete("/paslon/:id", AuthMiddleware.Auth, PaslonsControllers.delete)
 
 //partai
-routes.get("/partai", AuthMiddleware.Auth, PartaiController.getAll)
-routes.get("/partai/:id", AuthMiddleware.Auth, PartaiController.getOneById)
+routes.get("/partai", PartaiController.getAll)
+routes.get("/partai/:id", PartaiController.getOneById)
 routes.post("/partai", AuthMiddleware.Auth, UploadFile.upload("image"), PartaiController.createPartai)
 routes.patch("/partai/:id", AuthMiddleware.Auth, UploadFile.upload("image"), PartaiController.update)
 routes.delete("/partai/:id", AuthMiddleware.Auth, PartaiController.delete)

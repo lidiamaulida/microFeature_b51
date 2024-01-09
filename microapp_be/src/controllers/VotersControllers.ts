@@ -8,7 +8,7 @@ export default new class voteController {
         try {
           const loginSessions = res.locals.loginSession
           const data = {
-            paslonId: req.body.paslonId,
+            paslonId: req.body.paslonId
           }
           
           const { error, value } = createVotersSchema.validate(data)
